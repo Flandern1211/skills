@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Governance Kit"
+  short_description: "Use PGK through conversation / 通过对话使用 PGK"
+  default_prompt: "Use $project-governance-kit to safely create, adopt, or resume this project with PGK."

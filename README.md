@@ -22,6 +22,21 @@ Files:
 - [English entrypoint](skills/submitting-pull-requests/SKILL.md)
 - [中文完整版](skills/submitting-pull-requests/SKILL.zh-CN.md)
 
+### project-governance-kit
+
+A conversational entrypoint for Project Governance Kit (PGK). It covers:
+
+- creating a new governed project and stopping at draft-requirement confirmation;
+- inspecting an existing repository with read-only adoption checks before any writes;
+- resuming an already governed project without repeated initialization or duplicate records;
+- explicit trigger scenarios, inputs, workflow, outputs, acceptance criteria, and authorization gates.
+
+Files:
+
+- [English entrypoint](skills/project-governance-kit/SKILL.md)
+- [中文完整版](skills/project-governance-kit/SKILL.zh-CN.md)
+- [Codex UI metadata](skills/project-governance-kit/agents/openai.yaml)
+
 ## Repository Layout
 
 ```text
