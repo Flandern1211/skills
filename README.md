@@ -71,4 +71,4 @@ When adding a skill, create a dedicated directory under `skills/`, include a val
 
 ## License
 
-No license has been selected yet. Add a license before redistributing or accepting external contributions.
+This repository is licensed under the [MIT License](LICENSE).
