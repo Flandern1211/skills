@@ -22,6 +22,21 @@
 - [英文入口 SKILL.md](skills/submitting-pull-requests/SKILL.md)
 - [中文完整版 SKILL.zh-CN.md](skills/submitting-pull-requests/SKILL.zh-CN.md)
 
+### project-governance-kit
+
+Project Governance Kit（PGK）的对话式入口，覆盖：
+
+- 创建新治理项目，并停在 draft 需求确认；
+- 对已有仓库先执行只读接入检查，确认前不写入；
+- 恢复已治理项目，不重复初始化或创建重复记录；
+- 明确的触发场景、输入、流程、输出、验收标准和授权门禁。
+
+文件：
+
+- [英文入口 SKILL.md](skills/project-governance-kit/SKILL.md)
+- [中文完整版 SKILL.zh-CN.md](skills/project-governance-kit/SKILL.zh-CN.md)
+- [Codex UI 元数据](skills/project-governance-kit/agents/openai.yaml)
+
 ## 目录约定
 
 ```text
