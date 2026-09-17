@@ -1,54 +1,54 @@
 ---
 name: submitting-pull-requests
-description: 当通过 Fork 和 Pull Request 向 GitHub 仓库贡献代码时使用，包括 Fork/克隆配置、创建分支、同步上游、推送功能分支、创建或更新 PR、处理审查或 CI 失败，以及判断改动是否可合并。用户说“提 PR”“开合并请求”“提交贡献”“同步 fork”，或只描述这些步骤而未明确说 Pull Request 时，也应触发。
+description: Use when contributing to a GitHub repository through a fork and pull request, including fork/clone setup, branch creation, upstream synchronization, feature-branch publication, opening or updating a PR, resolving review or CI failures, and deciding whether a change is ready to merge. Also trigger for requests such as “提 PR”, “开合并请求”, “提交贡献”, or “同步 fork”.
 ---
 
-# 提交 Pull Request
+# Submitting Pull Requests
 
-## 概述
+## Overview
 
-使用此流程将本地改动转化为可审查、可复现的 GitHub Pull Request（PR）。基础流程是 **Fork → Clone → 创建分支 → 同步上游 → 推送 → PR**；以下检查进一步加入真实仓库所需的保障：正确的远程仓库、干净的改动范围、测试、敏感信息扫描、CI、审查和收尾清理。
+Use this workflow to turn a local change into a reviewable, reproducible GitHub Pull Request (PR). The basic path is **Fork → Clone → branch → synchronize upstream → push → PR**. The safeguards below cover real-user validation, repository conventions, issue selection, scope, tests, secret scanning, CI, review, and cleanup.
 
-## 操作规则
+## Operating Rules
 
-- 将上游仓库视为 PR 基线的事实来源。`origin` 通常指贡献者自己的 Fork；`upstream` 指原始仓库。
-- 不得直接在 `main`/`master` 上进行贡献改动，也不得将功能提交推送到 Fork 的默认分支。移动改动前先保留现有工作。
-- 除非用户明确要求，或在执行到该动作时再次确认，否则不得发布分支、创建 PR、强制推送、合并、删除分支或修改仓库设置。可以先完成不涉及公开发布的准备工作。
-- 不得为了赶期限而绕过必需的 CI、分支保护、审查、钩子或安全检查。
-- 如果工作树、差异、PR、提交、CI 日志或构建产物中出现凭据，立即暂停正常 PR 工作：先撤销或轮换凭据，再清理工作树及受影响的历史记录。只删除当前文件中的凭据并不能消除泄露。
-- 优先采用可恢复操作。重写个人 PR 分支后只能使用 `--force-with-lease`，不得使用无保护的 `--force`。
-- 是否需要在开发或提交 PR 前获得维护者确认，以项目官方贡献指南、Issue 模板、标签说明和维护者公开规则为准。官方明确要求认领、分配或事前确认时必须遵守；官方没有此要求时，可以直接基于合适的 Issue 开发并提交关联 PR。
-- 将项目的真实运行和使用视为首要证据来源：不得专门寻找那些没有证据表明会影响运行、用户、测试、构建、安全或可维护性的纯代码问题。
+- Treat the upstream repository as the source of truth for the PR base. `origin` normally means the contributor's fork; `upstream` means the original repository.
+- Never make a contributor change directly on `main`/`master` or push a feature commit to the fork's default branch. Preserve existing work before moving it.
+- Do not publish a branch, open a PR, force-push, merge, delete a branch, or change repository settings unless the user explicitly requested that action or confirms it when reached. Preparation may proceed without publication.
+- Never bypass required CI, branch protection, review, hooks, or security checks to satisfy a deadline.
+- If credentials appear in a worktree, diff, PR, commit, CI log, or artifact, stop normal PR work. Revoke or rotate them first, then clean the worktree and any affected history. Removing only the current line does not undo a leak.
+- Prefer reversible operations. For a rewritten personal PR branch, use `--force-with-lease`, never unguarded `--force`.
+- Whether maintainer approval is required before development or PR submission is determined by the repository's official contribution guide, Issue template, labels, and maintainer-published rules. If they require claiming, assignment, or prior approval, comply. If they do not, a suitable Issue may be implemented and linked directly from a PR.
+- Treat real project use as the primary evidence source. Do not hunt for code-only issues without demonstrated impact on runtime behavior, users, tests, builds, security, or maintainability.
 
-## 输入
+## Inputs
 
-执行本 Skill 前，应获取或从仓库中确定以下信息。无法取得的项目必须在输出中标记为未知或阻塞，不得自行编造：
+Before using this skill, obtain or determine the following from the repository. Mark unavailable items as unknown or blocked in the final output; never invent them:
 
-- 上游仓库、目标基线分支、用户 GitHub 账号及 Fork；
-- 项目的目标用户及本次验证采用的用户角色，例如终端用户、开发者用户、维护者或贡献者；
-- 目标 Issue、目标模块或有证据支持的问题描述；
-- README、贡献指南、Issue/PR 模板、提交与签署规范、CODEOWNERS 和测试说明；
-- 项目对 Issue 认领、分配、维护者确认和 PR 提交时机的官方规则；
-- 本地运行环境、必要配置、依赖、启动方式、日志和复现证据；
-- 当前分支、工作树状态、远程仓库配置和目标 PR 基线；
-- 最近 15 天内相关且已接受的 Issue/PR，以及历史成功和未成功 PR 样本；
-- 用户对推送分支、创建/更新 PR 或其他公开操作的明确授权。
+- upstream repository, target base branch, GitHub account, and fork;
+- target users and the user role being simulated, such as end user, developer user, maintainer, or contributor;
+- target Issue, target module, or an evidence-backed problem statement;
+- README, contribution guide, Issue/PR templates, commit and sign-off rules, CODEOWNERS, and test instructions;
+- official rules for Issue claiming, assignment, maintainer approval, and PR timing;
+- local runtime, required configuration, dependencies, startup procedure, logs, and reproduction evidence;
+- current branch, worktree status, remotes, and target PR base;
+- related accepted Issues/PRs from the last 15 days, plus historical successful and unsuccessful PR samples;
+- explicit user authorization for pushing branches, creating/updating PRs, or other public actions.
 
-## 工作流程
+## Workflow
 
-### 1. 确定仓库和贡献目标
+### 1. Establish the repository and contribution target
 
-询问或确定：
+Ask for or determine:
 
-- 上游仓库和目标基线分支（通常是 `OWNER/REPO:main`）；
-- 用户的 GitHub 账号和 Fork；
-- 项目服务的主要用户群体，以及本次要模拟的真实用户角色；
-- 计划进行的改动及关联 Issue（如有）；
-- 项目特有的贡献、测试、签署和 PR 模板规则。
+- upstream repository and target base branch, usually `OWNER/REPO:main`;
+- the user's GitHub account and fork;
+- the project's main user groups and the real user role to simulate;
+- intended change and linked Issue, if any;
+- project-specific contribution, test, sign-off, and PR-template rules.
 
-如果用户尚未 Fork 仓库，则在 GitHub 中创建 Fork，并确认 Fork 位于预期账号下。不得猜测仓库 URL 或默认分支。
+If the user has not forked the repository, create the fork on GitHub and verify that it belongs to the intended account. Do not guess the repository URL or default branch.
 
-对于已有检出目录，运行：
+For an existing checkout, run:
 
 ```bash
 git rev-parse --show-toplevel
@@ -57,16 +57,16 @@ git branch --show-current
 git status --short --branch
 ```
 
-对于新的检出目录，先克隆 Fork，再进入目录：
+For a new checkout, clone the fork and enter it:
 
 ```bash
 git clone https://github.com/<USER>/<REPO>.git
 cd <REPO>
 ```
 
-### 2. 以真实用户视角同步、安装、运行并使用项目
+### 2. Synchronize, install, run, and use the project as a real user
 
-提交 Issue 或 PR 前，先确保本地检出基于最新目标分支，再按照项目自身文档理解并实际运行项目：
+Before submitting an Issue or PR, confirm that the local checkout reflects the latest target branch, then follow the project's own documentation to understand and exercise it:
 
 ```bash
 git fetch upstream --prune
@@ -76,85 +76,85 @@ git pull --ff-only upstream <default-or-target-branch>
 git status --short --branch
 ```
 
-先明确本次体验代表的目标用户：终端用户、开发者用户、维护者或贡献者。随后阅读最新的 README、用户文档、贡献指南、Issue 模板、PR 模板、提交信息/签署规则和测试说明。严格按照官方推荐流程，从一名第一次接触项目的新用户视角完成依赖安装、环境配置、项目启动和核心功能使用。尽可能真实地走完与目标能力、目标模块或疑似问题相关的完整用户旅程，而不是跳过安装或配置直接调用内部代码。
+Identify the user represented by the investigation: end user, developer user, maintainer, or contributor. Read the current README, user documentation, contribution guide, Issue template, PR template, commit/sign-off rules, and test instructions. Follow the official recommended path from a first-time user's perspective to install dependencies, configure the environment, start the project, and use its core functions. Exercise the complete user journey related to the target capability, module, or suspected problem instead of skipping setup and calling internal code directly.
 
-使用项目时不得预设代码存在问题，也不得把源代码当作问题清单扫描。以观察者视角记录真实用户可能遇到的：
+Do not assume the code is defective and do not treat source files as an issue checklist. Observe and record problems a real user might encounter:
 
-- 无法完成或难以理解的安装、配置和启动步骤；
-- 错误、崩溃、异常日志、错误提示不足或行为不一致；
-- 文档与实际行为不符、关键步骤缺失或术语含糊；
-- 核心流程中的困惑、重复劳动、不可发现功能或体验障碍；
-- 对开发者、维护者或贡献者造成的测试、构建、协作、升级或故障排查成本。
+- installation, configuration, or startup steps that fail or are difficult to understand;
+- errors, crashes, anomalous logs, weak error messages, or inconsistent behavior;
+- discrepancies between documentation and behavior, missing critical steps, or ambiguous terminology;
+- confusion, repeated effort, undiscoverable functionality, or friction in a core flow;
+- test, build, collaboration, upgrade, or troubleshooting costs imposed on developers, maintainers, or contributors.
 
-记录采用的用户角色、准确命令、环境/配置、版本、操作路径、复现步骤、实际结果、预期结果、日志、测试结果和已验证范围。代码位置只能作为问题证据的一部分，不能单独构成提交理由。
+Record the user role, exact commands, environment and configuration, versions, action path, reproduction steps, actual result, expected result, logs, test results, and verified scope. A code location may support the evidence but cannot be the sole reason for a contribution.
 
-只有在真实使用、运行、测试、日志、文档不一致或维护流程中发现可复现、可解释、可验证的问题后，才能针对性审查相关代码并提出修复。不得仅因为代码看起来不整洁或理论上可改进，就修改那些没有证据表明会影响项目运行、用户体验、测试、构建、安全或后续维护的代码。代码质量、测试缺失、构建、文档或可维护性问题可以作为例外，但必须具体说明它如何增加后续开发、测试、构建、协作、升级或故障排查成本。
+Only after real use, runtime execution, tests, logs, documentation discrepancies, or maintenance workflows reveal a reproducible, explainable, verifiable problem may you inspect the relevant code and propose a fix. Do not change code merely because it looks untidy or theoretically improvable when there is no demonstrated impact on project execution, user experience, tests, builds, security, or future maintenance. Code-quality, missing-test, build, documentation, and maintainability findings are valid only when their concrete effect on development, testing, builds, collaboration, upgrades, or troubleshooting is explained.
 
-如果完成真实用户旅程、相关测试和维护流程检查后，没有发现值得提交且有实际影响的问题，则明确记录“未发现合适问题”，列出已验证的用户角色、流程和范围，然后停止。不得为了产出 Issue 或 PR 而继续扫描无关代码、放大细节或强行创建问题。
+If the real user journey, relevant tests, and maintenance checks reveal no worthwhile problem with actual impact, record **no suitable issue found**, list the user role, flows, and verified scope, and stop. Do not keep scanning unrelated code, inflate minor details, or force an Issue or PR for the sake of contributing.
 
-如果项目无法运行，必须记录阻塞原因、缺失的配置或依赖、准确的错误输出、已经尝试的命令和实际验证范围。不得声称已完成真实使用验证，也不得暗示项目已经成功测试。
+If the project cannot run, record the blocking cause, missing configuration or dependency, exact error output, attempted commands, and actual verified scope. Do not claim real-use validation or imply successful testing.
 
-所有 Issue、Commit 和 PR 的标题与正文都必须遵守已发现的项目规范，包括必需模板、关联语法、测试说明和提交格式。项目官方要求优先于任何历史示例；发布前必须再次检查这些规则。
+All Issue, commit, and PR titles and bodies must follow project conventions, including required templates, linking syntax, test sections, and commit format. Official requirements take precedence over historical examples; re-check them before publication.
 
-### 3. 建立 Issue 优先的工作项并应用项目提交规范
+### 3. Establish an Issue-first work item and apply repository submission rules
 
-创建分支或编写实现代码前，检查项目当前开放的 Issue，选择一个与目标能力、目标模块或项目方向相符且尚未有人负责的 Issue。同时检查 assignee、讨论内容和关联工作，不能因为 assignee 字段为空就认定该 Issue 无人负责：
+Before creating a branch or writing implementation code, inspect open Issues and choose an unassigned Issue aligned with the target capability, module, or project direction. Check assignees, discussion, and linked work; an empty assignee field alone does not prove the Issue is unclaimed:
 
 ```bash
 gh issue list --repo <OWNER>/<REPO> --state open --limit 100 --json number,title,body,labels,assignees,url
 gh issue view <ISSUE_NUMBER> --repo <OWNER>/<REPO> --comments
 ```
 
-随后检查项目官方提交规范是否要求事前认领、分配、维护者确认或设计批准。只有官方规则明确要求时，才将其作为开发和提交 PR 前的门禁，并先在 Issue 下留言：
+Then determine whether official repository rules require advance claiming, assignment, maintainer approval, or design approval. Only when the rules require it should this become a gate before development or PR submission. In that case, comment on the Issue first:
 
 ```text
-我理解的问题是：<具体问题与影响>
-计划解决方式：<拟采用的实现方向与范围>
-是否希望由我负责实现：<请确认/如需调整请告知>
-现有设计或实现约束：<已知约束；请补充或确认>
+My understanding of the problem: <specific problem and impact>
+Planned approach: <implementation direction and scope>
+May I take responsibility for implementing this: <please confirm or suggest changes>
+Existing design or implementation constraints: <known constraints; please confirm or add>
 ```
 
-记录 Issue URL/编号、当前 assignee/认领证据、适用的官方规则路径或链接、自己的留言 URL，以及规则要求的回复或分配结果。如果官方要求维护者确认，应通过仓库权限、CODEOWNERS 或项目记录的维护者名单核实回复者身份；普通贡献者、机器人或未经身份确认的表情反应不能满足此类要求。
+Record the Issue URL/number, assignee or claim evidence, applicable official rule path or link, comment URL, and any reply or assignment required by the rule. If maintainer approval is required, verify the responder using repository permissions, CODEOWNERS, or the documented maintainer list. A contributor, bot, or unauthenticated reaction does not satisfy such a requirement.
 
-使用以下提交准备状态：
+Use these submission-readiness states:
 
-- `ready`：官方要求的认领、分配或确认已经满足，或者官方没有要求事前确认；可以正式开发并提交关联 PR。
-- `waiting`：官方明确要求认领、分配或确认，但当前尚未满足；必须停止正式开发、提交、推送和创建/更新 PR。
-- `needs clarification`：官方规则相互矛盾或无法判断是否需要事前批准；先向维护者澄清，不得自行选择最宽松解释。
+- `ready`: required claiming, assignment, or approval is satisfied, or the repository has no prior-approval requirement. Formal development and an associated PR may proceed.
+- `waiting`: official rules require claiming, assignment, or approval and it is not yet satisfied. Stop formal development, commits, pushes, and PR creation/update.
+- `needs clarification`: official rules conflict or do not make the approval requirement clear. Ask maintainers; do not choose the loosest interpretation.
 
-如果 README、贡献指南、Issue 模板、标签说明和维护者公开规则都没有要求事前确认，则不必等待维护者回复。可以在 Issue 下简要说明准备处理及解决方向，然后直接开发，并按项目规定创建关联该 Issue 的 PR。用户对公开操作的授权仍然必须单独满足。
+If the README, contribution guide, Issue template, labels, and maintainer-published rules do not require prior approval, do not wait indefinitely for a maintainer reply. Briefly state the intended work and approach on the Issue, then develop and open an associated PR according to project rules. User authorization for the public action is still required separately.
 
-如果没有合适且无人负责的开放 Issue，不得在缺少项目规则或维护者指示时接手已分配的 Issue，也不得凭空制造 PR 目标。先按上述方式真实使用项目。只有真实使用、测试、日志、文档不一致或维护流程已经产生明确问题信号时，才进一步检查相关代码、测试、文档和项目历史；如果没有问题信号，则以“未发现合适问题”结束，不再为提交 PR 而扫描代码。
+If no suitable unassigned open Issue exists, do not take an assigned Issue without repository policy or maintainer direction, and do not invent a PR target. Use the project as described above. Inspect related code, tests, documentation, and history only when real use, tests, logs, documentation discrepancies, or maintenance workflows have produced a clear problem signal. Without such a signal, finish with **no suitable issue found** and do not scan code merely to create a PR.
 
-对于新发现的问题，先创建 Issue，其中包含目标用户或维护者角色、证据来源（真实使用、测试、日志、文档不一致或维护风险）、问题描述、影响/范围、复现步骤、实际结果、预期结果、相关日志/测试结果/代码位置、建议方案、已执行的验证，以及是否遵守仓库 Issue 规范。Issue 的叙述必须以真实用户遇到的问题或具体维护成本为中心，不能只说某段代码看起来不理想。随后按官方规则处理：如果要求确认或分配，则等待规则满足；如果没有此要求，则可以直接基于新 Issue 开发并提交关联 PR。
+For a newly discovered problem, create an Issue that includes the target user or maintainer role, evidence source, problem statement, impact and scope, reproduction steps, actual and expected results, logs/test results/code locations, proposed solution, validation performed, and confirmation of Issue-template compliance. Center the narrative on a real user problem or concrete maintenance cost, not merely code that looks suboptimal. Then apply official rules: wait if they require approval or assignment; otherwise development and an associated PR may proceed directly.
 
-对于已经关联 Issue 的工作，按项目规范说明准备开始处理，并在开发过程中同步关键进展、保留留言链接。如果工作范围或解决方向发生实质变化，重新检查官方规则和提交准备状态。
+For work already tied to an Issue, announce the start as required by project rules, post material progress updates, and preserve comment links. If scope or direction changes materially, re-check the official rules and readiness state.
 
-### 4. 参考近期已接受的 Issue 和 PR 格式，但不得覆盖官方规范
+### 4. Reference recent accepted Issue and PR formats without overriding official conventions
 
-起草或更新 Issue/PR 前，先阅读仓库官方规则：`.github/ISSUE_TEMPLATE/`、`PULL_REQUEST_TEMPLATE.md` 或 `.github/pull_request_template.md`、`CONTRIBUTING.md`、贡献文档、`CODEOWNERS`、提交/签署说明，以及会校验标题、正文或提交的 CI 检查。只要存在官方说明，就必须将其作为强制基准，并始终优先于任何历史示例。
+Before drafting or updating an Issue or PR, read the repository's own rules first: `.github/ISSUE_TEMPLATE/`, `PULL_REQUEST_TEMPLATE.md` or `.github/pull_request_template.md`, `CONTRIBUTING.md`, contribution documentation, `CODEOWNERS`, commit/sign-off guidance, and CI checks that validate titles, bodies, or commits. Official instructions are the mandatory baseline and always override examples.
 
-随后检查近期已接受的案例，使措辞和证据粒度符合当前实践：
+Then inspect accepted precedents so wording and evidence granularity match current practice:
 
 ```bash
 gh pr list --repo <OWNER>/<REPO> --state merged --search "<module or change keywords> merged:>=<YYYY-MM-DD>" --limit 20
 gh issue list --repo <OWNER>/<REPO> --state closed --search "<module or issue keywords> closed:>=<YYYY-MM-DD>" --limit 20
 ```
 
-优先参考最近 15 天内合并或经维护者确认、且与当前修改类型、模块、范围或风险相近的案例。阅读其标题、描述、模板、测试/验证章节、关联 Issue 和维护者评论。必须区分经维护者确认的 Issue 与因 stale、duplicate、rejected 或原因不明而关闭的 Issue；只有被接受的案例才能作为格式先例。
+Prefer examples merged or confirmed within the last 15 days and related to the same change type, module, scope, or risk. Read titles, descriptions, templates, test/verification sections, linked Issues, and maintainer comments. Distinguish a maintainer-accepted Issue from one closed as stale, duplicate, rejected, or unexplained; only accepted examples establish a format precedent.
 
-按以下优先级执行：
+Apply this precedence order:
 
-1. 仓库官方模板、贡献规则和自动格式检查——强制要求。
-2. 仓库维护者在近期已接受 Issue/PR 中作出的决定——用于填补官方规则空白的权威指导。
-3. 最近 15 天内已合并/已确认的案例——措辞、章节顺序和证据深度的首选实践参考。
-4. 更早的示例或通用 GitHub 惯例——仅在没有近期已接受案例时使用，并明确说明这一限制。
+1. Repository-official templates, contribution rules, and automated format checks — mandatory.
+2. Maintainer decisions in recent accepted Issues/PRs — authoritative guidance for gaps.
+3. Merged or confirmed examples from the last 15 days — preferred practical reference for wording, section order, and evidence depth.
+4. Older examples or generic GitHub conventions — use only when no recent accepted precedent exists, and report the limitation.
 
-应选择在修改类型、模块、范围和风险上最接近的案例，而不是单纯选择最新案例。不得用近期示例覆盖官方要求，不得将未合并或仅仅关闭的条目视为格式权威，也不得在模板存在空白时自行发明规范。如果官方规则含糊或缺少近期已接受样本，应报告缺失的证据，不得猜测。在最终报告中，必须将已查阅的强制规则与借鉴的当前实践案例分开列出。
+Choose examples closest in change type, module, scope, and risk rather than simply the newest. Never copy a recent example over an official requirement, treat an unmerged or merely closed item as formatting authority, or invent conventions from a template gap. If official rules are ambiguous or recent accepted samples are absent, report the missing evidence instead of guessing. In the final report, separate mandatory rules consulted from current-practice examples borrowed.
 
-### 5. 配置并验证远程仓库
+### 5. Configure and verify remotes
 
-确保 Fork 是推送目标，同时原始仓库以 `upstream` 的形式可用：
+Ensure the fork is the push target and the original repository is available as `upstream`:
 
 ```bash
 git remote get-url origin
@@ -162,30 +162,30 @@ git remote get-url --push origin
 git remote -v
 ```
 
-如果 `git remote -v` 中没有 `upstream`，则添加：
+If `git remote -v` does not show `upstream`, add it:
 
 ```bash
 git remote add upstream https://github.com/<OWNER>/<REPO>.git
 git remote -v
 ```
 
-如果已有 `upstream` URL 不正确，先展示不一致之处，并在修改前询问用户。不要将某种 Shell 专用的空重定向语法复制到其他 Shell 中。
+If an existing `upstream` URL is wrong, show the mismatch and ask before changing it. Do not copy shell-specific null redirection into a different shell.
 
-### 6. 创建范围集中的工作分支
+### 6. Create a focused working branch
 
-使用简短的分支名，例如 `feat/<topic>`、`fix/<topic>`、`docs/<topic>`，或遵循项目要求的命名规范：
+Use a short branch name such as `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or the project's required convention:
 
 ```bash
 git switch -c <type>/<short-topic>
 ```
 
-如果当前位于默认分支且存在**未提交**改动，直接创建新分支即可保留这些改动。如果改动已经提交到本地 `main`，则先在该提交处创建分支，再考虑是否需要重置。不得为了让分支看起来干净而丢弃现有工作。
+If the current branch is the default branch and has **uncommitted** changes, creating the new branch directly preserves them. If changes are already committed on local `main`, create a branch at that commit before considering a reset. Never discard work merely to make the branch clean.
 
-每个分支只包含一个连贯的改动主题。创建分支后检查状态。
+Keep one coherent change per branch. Check status after branch creation.
 
-### 7. 在本地开发并验证
+### 7. Develop and validate locally
 
-阅读仓库的贡献指南、测试配置、CODEOWNERS、PR 模板和 CI 工作流。只实现已确认的范围。暂存前运行：
+Read the contribution guide, test configuration, CODEOWNERS, PR template, and CI workflow. Implement only the confirmed scope. Before staging:
 
 ```bash
 git status --short
@@ -194,9 +194,9 @@ git diff
 git ls-files --others --exclude-standard
 ```
 
-检查敏感信息、私有数据、生成文件、大型二进制文件、调试输出和无关改动。不要将疑似凭据输出到聊天或公开 PR 中。根据项目要求运行格式化、Lint、类型检查、构建、单元测试、集成测试和安全扫描。记录准确的命令和结果。
+Check for secrets, private data, generated files, large binaries, debug output, and unrelated edits. Do not print a suspected secret into chat or a public PR. Run the repository's required formatter, linter, type check, build, unit tests, integration tests, and security scan as applicable. Record exact commands and results.
 
-有选择地暂存文件，并检查已暂存差异：
+Stage selectively and inspect the staged diff:
 
 ```bash
 git add <files>
@@ -204,11 +204,11 @@ git diff --cached --stat
 git diff --cached
 ```
 
-提交信息应简洁、使用祈使语气并符合项目规范。除非维护者明确要求，否则不得使用 `--no-verify`。
+Use a concise imperative commit message that matches project conventions. Do not use `--no-verify` unless a maintainer explicitly requires it.
 
-### 8. 发布前同步上游
+### 8. Synchronize upstream before publication
 
-首次推送前执行一次，并在创建或更新 PR 前立即再次执行：
+Do this before the first push and again immediately before opening or updating a PR:
 
 ```bash
 git fetch upstream --prune
@@ -217,21 +217,21 @@ git switch <feature-branch>
 git log --oneline --decorate -5 upstream/<base-branch>
 ```
 
-如果分支存在未提交改动，同步前先提交，或连同未跟踪文件一起暂存。根据项目规范选择 rebase 或 merge：
+If the branch has uncommitted changes, commit them or stash them together with untracked files before synchronizing. Choose rebase or merge according to project policy:
 
 ```bash
-# 线性历史；仅在该分支完全由你控制且可以重写时使用：
+# Linear history; only when the branch is fully yours to rewrite:
 git rebase upstream/<base-branch>
 
-# 需要保留历史或分支由多人共享时使用：
+# Preserve history or use when the branch is shared:
 git merge --no-edit upstream/<base-branch>
 ```
 
-发生冲突时，检查 `git status` 和 `git diff --name-only --diff-filter=U`，逐项解决冲突、删除所有冲突标记、暂存每个已解决文件，然后继续操作（`git rebase --continue` 或 `git commit`）。如果当前操作方向错误，则中止（`git rebase --abort` 或 `git merge --abort`）。完成最终同步后，无论是否发生过冲突，都要确认当前分支不落后于 `upstream/<base-branch>`，并在发布前重新运行全部相关测试。记录更新后的基线提交和最新测试结果。
+For conflicts, inspect `git status` and `git diff --name-only --diff-filter=U`, resolve deliberately, remove all conflict markers, stage each resolved file, then continue with `git rebase --continue` or `git commit`. If the operation is wrong, abort with `git rebase --abort` or `git merge --abort`. After the final synchronization, whether or not conflicts occurred, confirm that the branch is not behind `upstream/<base-branch>` and rerun all relevant tests. Record the updated base commit and fresh test results.
 
-### 9. 提交并发布功能分支
+### 9. Commit and publish the feature branch
 
-提交或推送前，再次确认提交准备状态为 `ready`、项目规范没有新增认领或审批要求，并且所有必需的 Issue 进展更新都已记录。如果状态为 `waiting` 或 `needs clarification`，则停止，不得提交或推送。随后再次验证分支、暂存范围、测试和目标远程仓库：
+Before committing or pushing, confirm that the submission-readiness state remains `ready`, repository policy has not introduced a new claim or approval requirement, and required Issue progress updates are recorded. If the state is `waiting` or `needs clarification`, stop without committing or pushing. Then verify the branch, staged scope, tests, and target remote again:
 
 ```bash
 git status --short --branch
@@ -241,44 +241,44 @@ git show --stat --oneline HEAD
 git push -u origin <feature-branch>
 ```
 
-如果 rebase 改写了已经发布的个人 PR 分支，先比较本地和远程历史。只有在获得用户授权且分支中没有其他贡献者工作时，才可以使用：
+If a rebase changed an already-published personal PR branch, compare local and remote history first. Only with user authorization and no other contributor's work use:
 
 ```bash
 git push --force-with-lease origin <feature-branch>
 ```
 
-如果用户没有明确要求公开发布，则在准备好命令后停止并请求确认。
+If publication was not explicitly requested, stop after preparing the commands and ask for confirmation.
 
-### 10. 创建或更新 PR 前复盘相关历史 PR
+### 10. Review relevant historical PRs before creating or updating a PR
 
-在创建新 PR 或更新现有 PR 前立即执行此步骤。使用 GitHub 搜索、仓库 PR 列表以及已认证的 `gh`，查找与当前改动类型、目标模块或问题场景相关的案例：
+Run this step immediately before creating a new PR or updating an existing one. Use GitHub search, the repository PR list, and authenticated `gh` to find examples related to the current change type, target module, or problem scenario:
 
 ```bash
 gh pr list --repo <OWNER>/<REPO> --state merged --search "<module or issue keywords>" --limit 20
 gh pr list --repo <OWNER>/<REPO> --state closed --search "<module or issue keywords>" --limit 20
 ```
 
-建立两组明确标注的样本：
+Build two explicitly labeled samples:
 
-- **成功样本：**至少 3 个状态为 `MERGED` 的 PR（核实合并日期和合并提交；仅关闭但未合并的 PR 不算成功）。
-- **未成功样本：**至少 3 个相关但未合并、被拒绝、关闭或以其他方式未被接受的 PR。记录其准确状态（`CLOSED`、`DECLINED`、`REJECTED` 或平台对应状态），不得将其描述为已合并。
+- **Successful sample:** at least 3 PRs with state `MERGED`. Verify merge date and merge commit; a merely closed PR is not successful.
+- **Unsuccessful sample:** at least 3 related PRs closed without merge, rejected, declined, or otherwise not accepted. Record the exact state, such as `CLOSED`, `DECLINED`, `REJECTED`, or the platform equivalent, and never describe them as merged.
 
-对每个样本 PR，检查改动文件范围、实现方式、测试和检查结果、PR 描述、提交信息、审查评论/决定，以及明确说明或可由证据判断的失败原因。随后形成简洁对比，覆盖：
+For every sampled PR, inspect changed-file scope, implementation approach, tests and check results, PR description, commit messages, review comments and decisions, and stated or evidenced failure reasons. Produce a compact comparison covering:
 
-1. 反复出现的范围边界和实现模式；
-2. 测试深度、缺失覆盖以及 CI/审查结果；
-3. 有助于或不利于审查的描述与提交信息特征；
-4. 常见审查异议、返工内容和失败原因。
+1. recurring scope boundaries and implementation patterns;
+2. test depth, missing coverage, and CI/review outcomes;
+3. description and commit-message traits that helped or hurt review;
+4. common review objections, rework, and failure causes.
 
-将对比结果转化为**当前 PR 的发布前检查清单**（范围、实现、测试/CI、描述、提交及审查风险项），并在继续前逐项执行。保留所有参考 PR 的链接/编号，并在最终交付中报告证据。
+Convert the comparison into a **pre-publication checklist for the current PR**, covering scope, implementation, tests/CI, description, commits, and review-risk items. Execute each item before proceeding. Preserve links or IDs for all references and report the evidence in the final handoff.
 
-如果找不到至少 3 个相关已合并 PR，或找不到至少 3 个相关未成功 PR，必须明确标记**样本不足**，并报告搜索范围、样本数量和缺失类别。不得编造模式，也不得表现出超出证据支持程度的信心；只能将有直接证据支持的观察转化为检查项。
+If fewer than 3 relevant merged PRs or fewer than 3 relevant unsuccessful PRs can be found, explicitly report **sample insufficient**, including search scope, counts, and missing categories. Do not invent patterns or imply more confidence than the evidence supports. Turn only directly supported observations into checklist items.
 
-同时记录：(a) 成功 PR 中值得复用的做法；(b) 未成功 PR 中需要避免的问题。如果现有 PR 的范围、实现、测试或审查上下文发生实质变化，更新前必须重新执行此复盘。
+Record both practices worth reusing from successful PRs and pitfalls to avoid from unsuccessful PRs. Repeat this review before updating an existing PR when its scope, implementation, tests, or review context changes materially.
 
-### 11. 验证准确的 PR 差异并创建/更新 PR
+### 11. Verify the exact PR diff and create or update the PR
 
-与上游基线比较，不要与 Fork 中可能已经过时的默认分支比较：
+Compare against the upstream base, not the fork's possibly stale default branch:
 
 ```bash
 git status --short --branch
@@ -287,41 +287,41 @@ git diff --stat upstream/<base-branch>...HEAD
 git diff upstream/<base-branch>...HEAD
 ```
 
-只有确认以下各项后，才能创建或更新 PR：
+Create or update the PR only after confirming:
 
-- 已按项目官方规范完成 Issue 认领、分配或确认要求；如果官方没有此类要求，已记录 `ready` 和所依据的规范检查结果；
-- 调查前项目已同步到最新目标分支，且发布前已立即再次同步；
-- 已记录真实使用/运行/测试/维护证据，或已明确报告运行阻塞和未验证范围；
-- 已完成聚焦的代码自审，以及项目要求的任何同行审查；
-- 相关测试/检查已通过，并记录准确证据；
-- 面向用户和开发者的文档已同步，或已记录无需修改文档的理由；
-- **基线仓库**是原始上游仓库；
-- **基线分支**是预期目标分支；
-- **来源仓库**是用户的 Fork；
-- **来源分支**是刚刚推送的功能分支；
-- 提交和文件只包含预期改动；
-- 已记录测试和本地检查结果。
+- official Issue claiming, assignment, or approval requirements are satisfied; when none exist, `ready` and the supporting policy check are recorded;
+- the project was synchronized to the latest target branch before investigation and again immediately before publication;
+- real-use, runtime, test, documentation, or maintenance evidence is recorded, or the runtime blocker and unverified scope are explicitly reported;
+- focused code self-review and any project-required peer review are complete;
+- relevant tests and checks passed with exact evidence recorded;
+- user-facing and developer documentation is synchronized, or a documented reason explains why no documentation change is needed;
+- the **base repository** is the original upstream repository;
+- the **base branch** is the intended target branch;
+- the **head repository** is the user's fork;
+- the **head branch** is the feature branch just pushed;
+- commits and files contain only the intended change;
+- tests and local checks are recorded.
 
-在可用时使用 GitHub 比较页面或 `gh`：
+Use GitHub's compare page or `gh` when available:
 
 ```bash
 gh auth status
 gh pr create --repo <OWNER>/<REPO> --head <USER>:<feature-branch> --base <base-branch> --title "<title>" --body-file <pr-body.md>
 ```
 
-PR 正文必须严格遵循仓库模板，并从目标用户遇到的问题或真实维护成本出发说明：目标用户/维护者角色、证据来源（真实使用、测试、日志、文档不一致、Issue 或维护风险）、复现步骤、实际结果与预期结果、相关日志/测试结果、问题影响、实现/改动范围、验证命令和结果、适用时使用 `Fixes #<Issue-number>`（或项目要求的关联格式）、兼容性或迁移说明、已知限制，以及是否遵循全部 Issue/PR/Commit 规范。不得只描述“代码哪里不理想”而不解释实际影响。再次根据官方模板和第 4 步中找到的近期（≤15 天）已接受案例确认合规性。为 Issue 创建 PR 后，还必须在该 Issue 下回复 PR URL、改动摘要和测试结果。
+The PR body must follow the repository template exactly and explain the change from the perspective of the affected user or concrete maintenance cost. Include target user or maintainer role, evidence source, reproduction steps, actual and expected results, logs/test results, impact, implementation scope, validation commands and results, `Fixes #<Issue-number>` or the required association syntax, compatibility or migration notes, known limitations, and confirmation of Issue/PR/commit convention compliance. Do not merely say that code looks suboptimal without explaining real impact. Re-check the official template and the accepted precedents from the last 15 days found in step 4. After creating a PR for an Issue, comment on the Issue with the PR URL, change summary, and test results.
 
-### 12. 处理 CI 和审查
+### 12. Handle CI and review
 
-创建或更新 PR 后，检查必需的检查项、审查者、标签、可合并状态和改动文件。对于审查反馈，在同一分支上进行范围集中的提交并推送；PR 会自动更新。说明改动内容以及重新运行了哪些检查。
+After opening or updating the PR, inspect required checks, reviewers, labels, mergeability, and changed files. Address review feedback with focused commits on the same branch and push; the PR updates automatically. Explain what changed and which checks were rerun.
 
-如果 CI 失败，找出第一个可执行的失败点，并尽可能在本地复现。修复根因，重新运行必需检查并更新 PR。不得通过跳过任务、弱化测试、禁用分支保护或手动合并来掩盖失败。
+If CI fails, identify the first actionable failure and reproduce it locally where possible. Fix the cause, rerun required checks, and update the PR. Never hide a failure by skipping a job, weakening a test, disabling branch protection, or merging manually.
 
-如果敏感信息已经泄露，在完成凭据撤销/轮换、泄露评估、受影响工作树/历史/产物清理、通知安全负责人，并通过必需的 CI 和审查之前，保持 PR 阻塞。事件详情应放在受限的安全频道中，不要写入公开 PR。
+If a secret was exposed, keep the PR blocked until the credential is revoked or rotated, exposure is assessed, affected worktree/history/artifacts are cleaned, security owners are notified, and required CI and review pass. Put incident details in a restricted security channel, not the public PR.
 
-### 13. 合并或拒绝后收尾
+### 13. Close out after merge or rejection
 
-只有在用户或维护者确认 PR 已合并/关闭后，才执行：
+Only after the user or maintainer confirms that the PR is merged or closed:
 
 ```bash
 git switch <default-branch>
@@ -330,88 +330,88 @@ git pull --ff-only upstream <default-branch>
 git branch -d <feature-branch>
 ```
 
-只有获得明确授权且远程功能分支不再需要时，才能删除它。保留 PR URL、最终提交、检查结果、审查结论和后续 Issue 的简短记录。
+Delete the remote feature branch only with explicit authorization and only when it is no longer needed. Keep a short record of the PR URL, final commit, checks, review result, and follow-up Issues.
 
-## 验收标准
+## Acceptance Criteria
 
-创建或更新 PR 前，逐项判定以下标准。某项不适用时必须说明原因，不能直接省略：
+Before creating or updating a PR, evaluate every criterion below. If an item does not apply, state why instead of silently omitting it:
 
-- 已获取“输入”章节要求的信息，或明确标记无法获取的内容和影响；
-- 已同步并真实运行/使用项目，或准确记录无法运行的阻塞、错误和未验证范围；
-- 已明确目标用户或维护者角色，并从新用户视角走过官方推荐的安装、配置、启动和相关核心流程；
-- Issue 或问题具有可复现、可解释、可验证的证据，改动确实影响运行、用户体验、测试、构建、安全或后续维护；
-- 已检查项目官方提交规范，提交准备状态为 `ready`：官方要求的认领、分配或确认均已满足，或者已确认官方没有事前确认要求；
-- Issue、Commit 和 PR 符合项目官方模板与提交规范，并参考了适用的近期已接受案例；
-- 改动范围聚焦，代码自审、敏感信息检查、相关测试和文档同步已经完成；
-- 发布前已再次同步最新目标分支，确认没有落后，并重新运行相关测试；
-- 已完成历史 PR 复盘；样本不足时已明确报告数量、范围和结论限制；
-- “必须输出的内容”中所有适用字段均有证据，未知、等待和风险项均已显式列出；
-- 推送或创建/更新公开 PR 已获得用户明确授权。
+- required input is available, or unavailable information and its impact are explicitly marked;
+- the project was synchronized and used in a realistic environment, or runtime blockers, errors, and unverified scope are accurately recorded;
+- the target user or maintainer role is identified, and the official installation, configuration, startup, and relevant core flow were exercised from a new-user perspective;
+- the Issue or problem has reproducible, explainable, verifiable evidence and affects runtime, user experience, tests, builds, security, or future maintenance;
+- official submission rules were checked and readiness is `ready`: required claiming, assignment, or approval is satisfied, or the repository was confirmed to have no prior-approval requirement;
+- Issue, commit, and PR content follows official templates and submission rules and references applicable recent accepted precedents;
+- scope is focused, code self-review, secret scanning, relevant tests, and documentation synchronization are complete;
+- the latest target branch was synchronized again before publication, the branch is not behind, and relevant tests were rerun;
+- historical PR review is complete; insufficient samples are reported with counts, scope, and conclusion limits;
+- all applicable Required Output fields contain evidence, with unknown, waiting, and risk items explicit;
+- pushing or creating/updating a public PR has explicit user authorization.
 
-如果真实使用和相关维护检查没有发现值得提交的问题，则验收的正确结果是“未发现合适问题”：报告用户角色、走过的流程和验证范围，结束工作；不得将“没有创建 Issue/PR”判为失败，也不得强行寻找问题。
+If realistic use and related maintenance checks reveal no worthwhile problem, the correct outcome is **no suitable issue found**. Report the user role, exercised flows, and verified scope, then stop. The absence of an Issue or PR is not a failure and must not trigger forced issue hunting.
 
-验收结果分为：
+Acceptance results:
 
-- `PASS`：所有适用的强制标准均满足，可以执行已授权的提交或 PR 操作。
-- `NO_ISSUE`：真实使用及相关维护检查后没有发现值得提交的问题；报告验证范围并结束，不创建 Issue 或 PR。
-- `WAIT`：项目官方规范要求的认领/审批尚未满足、用户尚未授权公开操作，或需要澄清规则；报告等待状态，不执行对应公开操作。
-- `FAIL`：缺少关键证据、跳过官方规则/测试/同步，或发现敏感信息泄露等实质问题；先修复后重新验收。
+- `PASS`: all applicable mandatory criteria are satisfied; authorized commit or PR actions may proceed.
+- `NO_ISSUE`: realistic use and maintenance checks found no worthwhile problem; report scope and finish without an Issue or PR.
+- `WAIT`: repository policy requirements or user authorization are pending, or rules require clarification; report the wait and do not perform the corresponding public action.
+- `FAIL`: critical evidence is missing, official rules/tests/synchronization were skipped, secrets were exposed, or another material problem exists; fix it and re-evaluate.
 
-## 必须输出的内容
+## Required Output
 
-用清单报告进度，并明确标记未知或阻塞项：
+Report progress as a checklist, explicitly marking unknown or blocked items:
 
 ```text
-- [x] 仓库/远程：origin=<Fork>，upstream=<来源>，base=<分支>
-- [x] 真实运行优先验证：sync=<命令/结果>；文档/配置/依赖=<已阅读/已配置>；真实使用流程=<范围/结果>（或 blocker=<准确错误和未验证范围>）
-- [x] 用户视角：角色=<终端用户/开发者/维护者/贡献者>；新用户旅程=<安装、配置、启动、核心流程>；观察=<卡点、错误、困惑、不一致、文档缺口或无合适问题>
-- [x] 格式依据：官方模板/贡献规则=<路径或 `none found`>；近期已接受案例=<≤15 天的 Issue/PR 链接，或 `no recent accepted precedent`>；采用层级=<先官方、后近期案例>
-- [x] Issue 与提交规范：<Issue URL/编号及无人负责证据，或新 Issue URL>；官方认领/确认规则=<路径/链接或 `none`>；提交准备状态=<ready/waiting/needs clarification>；满足证据=<评论/分配/确认链接或无需等待的依据>
-- [x] Issue 沟通：<开工前留言、进展更新和待确认问题>
-- [x] 工作分支：<分支>
-- [x] 范围/差异已审查；敏感信息检查：<结果>
-- [x] 测试/检查：<命令>——<结果>
-- [x] 同步状态：<rebase/merge/none>，冲突：<结果>
-- [x] 提交/推送：<提交>，<远程分支>（或等待确认）
-- [x] 历史 PR 复盘：merged=<至少 3 个链接/编号>；unsuccessful=<至少 3 个链接/编号及准确状态>（或 `sample insufficient`，附数量和搜索范围）
-- [x] 可复用做法：<有证据支持的摘要>
-- [x] 需要避免的问题：<有证据支持的摘要>
-- [x] 发布前检查清单：<Issue 与官方提交规范、代码审查、测试、文档同步、历史复盘、范围、描述、提交——已执行；明确列出阻塞项>
-- [x] Issue/PR 证据：角色=<目标用户/维护者>；来源=<真实使用/测试/日志/文档不一致/Issue/维护风险>；复现=<步骤>；实际=<结果>；预期=<结果>；影响=<用户障碍或维护成本>；日志/测试/代码位置=<证据>；范围=<文件/组件>；验证=<命令/结果>；规范=<已遵守或例外>
-- [x] PR：<URL>，基线/来源已核实；Issue 关联=<`Fixes #...` 或项目格式>；Issue 回链评论=<URL>
-- [ ] CI/审查/合并：<当前状态和下一步>
-- [x] 验收结论：<PASS/NO_ISSUE/WAIT/FAIL>；依据=<已满足项、无合适问题、等待项或失败项>
+- [x] Repository/remotes: origin=<fork>, upstream=<source>, base=<branch>
+- [x] Runtime-first validation: sync=<command/result>; docs/config/dependencies=<read/configured>; real-use flow=<scope/result> (or blocker=<exact error and unverified scope>)
+- [x] User perspective: role=<end user/developer/maintainer/contributor>; new-user journey=<install, configure, start, core flow>; observations=<friction, errors, confusion, inconsistencies, documentation gaps, or no suitable issue>
+- [x] Format authority: official templates/contribution rules=<paths or `none found`>; recent accepted precedents=<Issue/PR links dated ≤15 days, or `no recent accepted precedent`>; hierarchy=<official then recent examples>
+- [x] Issue and submission policy: <Issue URL/number and unassigned evidence, or new Issue URL>; official claim/approval rule=<path/link or `none`>; readiness=<ready/waiting/needs clarification>; evidence=<comment/assignment/approval link or no-wait basis>
+- [x] Issue communication: <pre-start comment, progress updates, and outstanding questions>
+- [x] Working branch: <branch>
+- [x] Scope/diff reviewed; secret check: <result>
+- [x] Tests/checks: <commands> — <results>
+- [x] Synchronization: <rebase/merge/none>, conflicts: <result>
+- [x] Commit/push: <commit>, <remote branch> (or awaiting authorization)
+- [x] Historical PR review: merged=<3+ links/IDs>; unsuccessful=<3+ links/IDs with exact states> (or `sample insufficient` with counts and search scope)
+- [x] Reusable practices: <evidence-backed summary>
+- [x] Pitfalls to avoid: <evidence-backed summary>
+- [x] Pre-publication checklist: <Issue/policy, code review, tests, docs, history review, scope, description, commits — executed; blockers listed>
+- [x] Issue/PR evidence: role=<target user/maintainer>; source=<real use/test/log/docs discrepancy/Issue/maintenance risk>; reproduction=<steps>; actual=<result>; expected=<result>; impact=<user friction or maintenance cost>; logs/tests/code location=<evidence>; scope=<files/components>; validation=<commands/results>; conventions=<compliant or exception>
+- [x] PR: <URL>, base/head verified; Issue association=<`Fixes #...` or project syntax>; Issue follow-up comment=<URL>
+- [ ] CI/review/merge: <current status and next action>
+- [x] Acceptance: <PASS/NO_ISSUE/WAIT/FAIL>; basis=<satisfied, no issue, waiting, or failing items>
 ```
 
-如果存在 PR，结尾必须给出 PR URL、准确的测试证据、当前 CI/审查状态、剩余风险和下一步行动。没有证据时，绝不能声称 PR 已准备好或已合并。
+When a PR exists, end with its URL, exact test evidence, current CI/review state, remaining risks, and next action. Never claim a PR is ready or merged without evidence.
 
-## 常见错误
+## Common Mistakes
 
-| 错误 | 修正 |
+| Mistake | Correction |
 |---|---|
-| 推送到 `main`，或从错误仓库创建 PR | 创建功能分支，并明确核实基线/来源 |
-| 将 `origin` 当作上游仓库 | 保持 `origin` 为 Fork 推送目标；通过 `upstream` 获取原始仓库 |
-| 使用过时的 `origin/main` 同步 | 获取并对照 `upstream/<base-branch>` |
-| rebase 后使用无保护的 `--force` | 确认分支归属，并使用 `--force-with-lease` |
-| 将关闭的 PR 当作成功案例，或只挑方便的案例 | 成功案例必须核实 `MERGED` 和合并提交；单独标注未成功状态 |
-| 因搜索麻烦或时间紧而跳过历史复盘 | 报告 `sample insufficient`、数量和范围；不得编造结论，只保留有证据的检查项 |
-| 官方规范要求认领或确认，却直接开始编码或提交 PR | 先满足规范的认领、分配或确认要求；官方没有此要求时可直接基于 Issue 开发 |
-| 官方没有确认要求，却无限等待维护者回复 | 记录规范检查和 `ready` 依据；在 Issue 下简要说明方向后按规范提交关联 PR |
-| 没有 Issue 就创建推测性 PR | 先创建有证据的 Issue，再按官方提交规范决定是否需要等待；不得凭空猜测问题 |
-| 只在 PR 标题中提到 Issue，或忘记回链 | 使用规定的关闭/关联语法，并在 Issue 下回复 PR URL、摘要和测试结果 |
-| 将测试通过、用户授权、截止期限或表情反应当作官方要求的审批 | 只有项目规范明确要求时才等待维护者批准；否则记录无需等待的规则依据 |
-| 认为测试通过就自动包含文档和自审 | 将代码审查和文档同步列为发布前明确检查项，并提供证据或说明无需改文档的理由 |
-| 一开始就扫描代码寻找理论缺陷 | 先同步、阅读项目说明、运行项目并体验相关用户流程；有具体证据后才针对性审查代码 |
-| 真实使用后没有问题，仍继续翻代码凑贡献 | 报告“未发现合适问题”、用户角色和已验证范围，然后停止，不创建 Issue 或 PR |
-| Issue/PR 只说代码不够理想 | 从真实用户障碍或维护成本描述问题，附复现、实际/预期结果及日志/测试等证据 |
-| 配置失败却声称完成真实使用验证 | 报告准确阻塞、缺失配置、错误、尝试范围和未验证区域 |
-| 使用通用 Issue/PR/Commit 文案而忽略仓库规范 | 阅读并遵循仓库模板和贡献规则；发布前记录合规情况 |
-| 用近期 PR/Issue 格式覆盖项目官方规则 | 先执行官方模板和贡献指南，近期案例只能补充官方未规定的细节 |
-| 将旧的、未合并或仅关闭的案例当作格式权威 | 优先使用最近 15 天内、经维护者接受的案例，并匹配改动类型、模块、范围和风险；没有案例时明确报告 |
-| 只在最新提交中删除 `.env` | 轮换/撤销凭据，并清理受影响的历史和产物 |
-| CI 或审查阻塞时仍合并 | 修复原因并等待必需门禁 |
-| 没有测试或 PR 链接就说“完成” | 报告证据，并明确保留阻塞项 |
+| Pushes to `main` or opens a PR from the wrong repository | Create a feature branch and explicitly verify base and head |
+| Treats `origin` as upstream | Keep `origin` as the fork push target; fetch the original through `upstream` |
+| Synchronizes against stale `origin/main` | Fetch and compare against `upstream/<base-branch>` |
+| Uses unguarded `--force` after rebase | Confirm branch ownership and use `--force-with-lease` |
+| Treats a closed PR as successful or samples only convenient examples | Verify `MERGED` and the merge commit; label unsuccessful states separately |
+| Skips historical review because search is inconvenient or time is short | Report `sample insufficient` with counts and scope; never invent conclusions |
+| Repository rules require claiming or approval, but development or PR submission begins anyway | Satisfy required claiming, assignment, or approval first; proceed directly only when rules allow it |
+| Repository rules do not require approval, but work waits indefinitely for a maintainer reply | Record the policy check and `ready` basis, state the direction on the Issue, then submit the associated PR according to project rules |
+| Creates a speculative PR when no Issue exists | Create an evidence-backed Issue first and follow official submission rules; do not invent a problem |
+| Mentions an Issue only in the PR title or forgets the follow-up | Use the required association syntax and reply on the Issue with PR URL, summary, and tests |
+| Treats tests, user permission, a deadline, or an emoji as an approval required by repository policy | Wait for maintainer approval only when official rules require it; otherwise record the no-wait basis |
+| Assumes passing tests imply documentation and self-review are complete | Make code review and documentation synchronization explicit checklist items |
+| Starts by scanning code for theoretical defects | Synchronize, read instructions, run the project, and exercise the relevant user journey before targeted code review |
+| Continues searching code merely to produce a contribution after realistic use found no problem | Report **no suitable issue found**, the user role, and verified scope, then stop |
+| Describes only why code looks suboptimal | Frame the Issue/PR around real user friction or maintenance cost and attach reproduction, actual/expected results, logs, and tests |
+| Claims real-use validation after setup failed | Report the exact blocker, missing configuration, errors, attempted scope, and unverified areas |
+| Uses generic Issue/PR/commit text while ignoring repository conventions | Follow repository templates and contribution rules and record compliance |
+| Copies a recent PR or Issue format over official rules | Apply official templates first; use recent accepted examples only for gaps |
+| Uses an old, unmerged, or merely closed example as style authority | Prefer maintainer-accepted examples from the last 15 days matched by change type, module, scope, and risk |
+| Deletes `.env` only in the latest commit | Revoke or rotate credentials and clean affected history and artifacts |
+| Merges while CI or review is blocked | Fix the cause and wait for required gates |
+| Says “done” without tests or a PR link | Report evidence and keep blocked items visible |
 
-## 来源说明
+## Source Note
 
-此流程吸收了 Flandern 知识库中归档的 Notion 笔记 `2026-08-19-notion-github-pr.md`：Fork、Clone、创建分支，并在推送或创建 PR 前与原始仓库同步。其余检查是为了让贡献流程可重复并满足完成性和安全性要求而有意加入的保障。
+This workflow incorporates the archived Notion note `2026-08-19-notion-github-pr.md` from the Flandern vault: fork, clone, create a branch, and synchronize the fork with the original repository before pushing or opening a PR. The additional checks are deliberate completion and safety requirements for repeatable contributions.

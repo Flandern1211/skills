@@ -1,50 +1,74 @@
 # Skills
 
-个人维护的 Agent Skills 集合。每个 Skill 都放在 `skills/<skill-name>/` 下，并以 `SKILL.md` 作为入口文件。
+A personal collection of reusable Agent Skills. Each skill lives in `skills/<skill-name>/` and uses `SKILL.md` as its canonical entrypoint.
 
-## 已收录
+[中文说明](README.zh-CN.md)
+
+## Included Skills
 
 ### submitting-pull-requests
 
-面向 GitHub Fork 与 Pull Request 贡献流程的中文 Skill，覆盖：
+A workflow for contributing to GitHub repositories through forks and pull requests. It covers:
 
-- 从真实用户视角安装、运行和验证项目；
-- Issue 选择、项目官方提交规范与沟通流程；
-- 分支、上游同步、测试、敏感信息和发布检查；
-- 近期 Issue/PR 格式参考与历史 PR 成败复盘；
-- PR 创建、CI、审查和合并后收尾；
-- 输入、流程、输出和验收标准。
+- using, running, and validating a project as a real user;
+- Issue selection, repository submission policy, and maintainer communication rules;
+- branch setup, upstream synchronization, tests, secret scanning, and publication checks;
+- recent Issue/PR format precedents and historical PR success/failure review;
+- PR creation, CI, review, and post-merge cleanup;
+- explicit inputs, workflow, outputs, and acceptance criteria.
 
-文件：[skills/submitting-pull-requests/SKILL.md](skills/submitting-pull-requests/SKILL.md)
+Files:
 
-## 目录约定
+- [English entrypoint](skills/submitting-pull-requests/SKILL.md)
+- [中文完整版](skills/submitting-pull-requests/SKILL.zh-CN.md)
+
+## Repository Layout
 
 ```text
 skills/
   <skill-name>/
-    SKILL.md
-    agents/       # 可选
-    references/   # 可选
-    scripts/      # 可选
-    assets/       # 可选
+    SKILL.md              # Canonical entrypoint (English by default)
+    SKILL.<locale>.md     # Optional full localization
+    agents/               # Optional UI metadata and invocation policy
+    references/           # Optional on-demand documentation
+    scripts/              # Optional executable helpers
+    assets/               # Optional generated-output assets
 ```
 
-每个 Skill 应保持自包含，并在提交前验证 YAML frontmatter、触发描述、流程完整性和配套资源。
+Keep each skill self-contained. Before publishing, validate the YAML frontmatter, trigger conditions, workflow completeness, and any supporting resources.
 
-## 使用
+## Languages
 
-将需要的 Skill 目录复制到本地 Codex Skills 目录：
+`SKILL.md` is the canonical file recognized by Agent Skills runtimes. This repository uses English for the canonical entrypoint and stores translated full copies as `SKILL.<locale>.md` so the runtime does not load both languages at once.
+
+To use a localized skill, copy the relevant directory to your local skills directory and make the localization file the entrypoint. For example, in PowerShell:
+
+```powershell
+Copy-Item -Recurse .\skills\submitting-pull-requests $env:USERPROFILE\.codex\skills\submitting-pull-requests
+Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.en.md
+Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.zh-CN.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md
+```
+
+On macOS or Linux, use the equivalent `cp` and `mv` commands. Do not keep two `SKILL.md` files in one directory.
+
+## Installation
+
+Copy the skill directory into a supported skills location:
 
 ```text
 ~/.codex/skills/<skill-name>/
 ```
 
-也可以放入支持 Agent Skills 约定的其他运行时目录，例如：
+Other Agent Skills-compatible runtimes may use:
 
 ```text
 ~/.agents/skills/<skill-name>/
 ```
 
-## 后续维护
+## Contributing Skills
 
-新增 Skill 时，在 `skills/` 下创建独立目录，并更新本 README 的“已收录”列表。提交前不要包含凭据、私有配置、会话记录或个人环境文件。
+When adding a skill, create a dedicated directory under `skills/`, include a valid `SKILL.md`, and update the included-skills list in both README files. Never publish credentials, private configuration, session transcripts, or machine-specific files.
+
+## License
+
+No license has been selected yet. Add a license before redistributing or accepting external contributions.
