@@ -2,87 +2,59 @@
 
 [English](README.md) | 中文
 
-个人维护的 Agent Skills 集合。每个 Skill 都放在 `skills/<skill-name>/` 下，并以 `SKILL.md` 作为入口文件。
+可复用的 Agent Skills 集合。Agent 可以直接读取本仓库，本地安装只是可选方式。
 
-## 已收录
+## 使用方式
 
-### submitting-pull-requests
+### 通过 GitHub 使用
 
-面向 GitHub Fork 与 Pull Request 贡献流程的中文 Skill，覆盖：
+把仓库地址和任务发给能够读取 GitHub 仓库的 Agent。
 
-- 从真实用户视角安装、运行和验证项目；
-- Issue 选择、项目官方提交规范与沟通流程；
-- 分支、上游同步、测试、敏感信息和发布检查；
-- 近期 Issue/PR 格式参考与历史 PR 成败复盘；
-- PR 创建、CI、审查和合并后收尾；
-- 输入、流程、输出和验收标准。
+Agent 应当：
 
-文件：
+1. 检查仓库，并读取 `skills/*/SKILL.md` 中的 Skill 描述；
+2. 选择匹配的 Skill，完整读取其说明和引用资源；
+3. 按照 Skill 完成任务，并说明使用了哪个 Skill。
 
-- [英文入口 SKILL.md](skills/submitting-pull-requests/SKILL.md)
-- [中文完整版 SKILL.zh-CN.md](skills/submitting-pull-requests/SKILL.zh-CN.md)
+可复制提示词：
 
-### project-governance-kit
+```text
+请把 https://github.com/Flandern1211/skills 作为 Agent Skills 仓库读取。
+检查所有 skills/*/SKILL.md，选择与我的任务匹配的 Skill，完整读取该
+Skill 及其引用资源，然后按照说明完成任务：<描述任务>
+```
 
-Project Governance Kit（PGK）的对话式入口，覆盖：
+适用于 Codex、Claude Code、Gemini CLI、GitHub Copilot、OpenCode，以及其他能够读取仓库的 Agent。如果无法直接访问远端仓库，让 Agent 自行克隆到工作区。
 
-- 创建新治理项目，并停在 draft 需求确认；
-- 对已有仓库先执行只读接入检查，确认前不写入；
-- 恢复已治理项目，不重复初始化或创建重复记录；
-- 明确的触发场景、输入、流程、输出、验收标准和授权门禁。
+### 本地安装（可选）
 
-文件：
+只有运行时需要自动发现或离线使用时才需要安装。按照对应 Agent 的文档，把完整 Skill 目录复制到它支持的位置，例如 `~/.agents/skills/` 或 `~/.codex/skills/`。
 
-- [英文入口 SKILL.md](skills/project-governance-kit/SKILL.md)
-- [中文完整版 SKILL.zh-CN.md](skills/project-governance-kit/SKILL.zh-CN.md)
-- [Codex UI 元数据](skills/project-governance-kit/agents/openai.yaml)
+## 已收录 Skill
 
-## 目录约定
+| Skill | 用途 | 文件 |
+| --- | --- | --- |
+| `submitting-pull-requests` | 通过 Fork 和 Pull Request 向 GitHub 仓库贡献，覆盖验证、同步、CI 和审查。 | [英文](skills/submitting-pull-requests/SKILL.md) · [中文](skills/submitting-pull-requests/SKILL.zh-CN.md) |
+| `project-governance-kit` | 通过对话使用 Project Governance Kit 创建、接入或恢复治理项目。 | [英文](skills/project-governance-kit/SKILL.md) · [中文](skills/project-governance-kit/SKILL.zh-CN.md) · [可选 UI 元数据](skills/project-governance-kit/agents/openai.yaml) |
+
+## 仓库结构
 
 ```text
 skills/
   <skill-name>/
-    SKILL.md              # 规范入口，默认英文
-    SKILL.<locale>.md     # 可选的其他语言完整版本
-    agents/       # 可选
-    references/   # 可选
-    scripts/      # 可选
-    assets/       # 可选
+    SKILL.md              # 规范入口
+    SKILL.<locale>.md     # 可选本地化版本
+    agents/               # 可选 UI 元数据
+    references/           # 可选文档
+    scripts/              # 可选脚本
+    assets/               # 可选资源
 ```
 
-每个 Skill 应保持自包含，并在提交前验证 YAML frontmatter、触发描述、流程完整性和配套资源。
+`SKILL.md` 是规范入口。Agent 可以优先读取对应语言版本；如果内容冲突，应以 `SKILL.md` 为准并说明差异。
 
-## 语言约定
+## 贡献
 
-Agent Skills 运行时默认识别 `SKILL.md`。本仓库将英文版作为规范入口，将其他语言的完整版本保存为 `SKILL.<locale>.md`，避免运行时同时加载两种语言、增加上下文成本。
-
-如果需要在本机使用中文版，请先把整个 Skill 目录复制到本地 skills 目录，再将 `SKILL.zh-CN.md` 调整为入口文件。PowerShell 示例：
-
-```powershell
-Copy-Item -Recurse .\skills\submitting-pull-requests $env:USERPROFILE\.codex\skills\submitting-pull-requests
-Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.en.md
-Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.zh-CN.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md
-```
-
-macOS 或 Linux 使用对应的 `cp` 和 `mv` 命令。同一目录中不要同时保留两个 `SKILL.md`。
-
-## 使用
-
-将需要的 Skill 目录复制到本地 Codex Skills 目录：
-
-```text
-~/.codex/skills/<skill-name>/
-```
-
-也可以放入支持 Agent Skills 约定的其他运行时目录，例如：
-
-```text
-~/.agents/skills/<skill-name>/
-```
-
-## 后续维护
-
-新增 Skill 时，在 `skills/` 下创建独立目录，并同时更新中英文 README 的“已收录/Included Skills”列表。提交前不要包含凭据、私有配置、会话记录或个人环境文件。
+在 `skills/<skill-name>/` 下新增 Skill，提供有效的 `SKILL.md`，并同步更新中英文 README。不要提交凭据、私有配置、会话记录或机器专用文件。
 
 ## 许可证
 

@@ -1,88 +1,61 @@
 # Skills
 
-A personal collection of reusable Agent Skills. Each skill lives in `skills/<skill-name>/` and uses `SKILL.md` as its canonical entrypoint.
+A collection of reusable Agent Skills. Agents can read this repository directly; local installation is optional.
 
 [中文说明](README.zh-CN.md)
 
-## Included Skills
+## Usage
 
-### submitting-pull-requests
+### Use through GitHub
 
-A workflow for contributing to GitHub repositories through forks and pull requests. It covers:
+Send the repository URL and your task to any Agent that can read GitHub repositories.
 
-- using, running, and validating a project as a real user;
-- Issue selection, repository submission policy, and maintainer communication rules;
-- branch setup, upstream synchronization, tests, secret scanning, and publication checks;
-- recent Issue/PR format precedents and historical PR success/failure review;
-- PR creation, CI, review, and post-merge cleanup;
-- explicit inputs, workflow, outputs, and acceptance criteria.
+The Agent should:
 
-Files:
+1. inspect the repository and the descriptions in `skills/*/SKILL.md`;
+2. select and fully read the matching Skill and its referenced resources;
+3. follow the Skill to complete the task and state which Skill was used.
 
-- [English entrypoint](skills/submitting-pull-requests/SKILL.md)
-- [中文完整版](skills/submitting-pull-requests/SKILL.zh-CN.md)
+Copyable prompt:
 
-### project-governance-kit
+```text
+Read https://github.com/Flandern1211/skills as an Agent Skills repository.
+Inspect all skills/*/SKILL.md entries, select the Skill(s) that match my task,
+read the selected Skill and its referenced resources in full, then use them to
+complete this task: <describe the task>
+```
 
-A conversational entrypoint for Project Governance Kit (PGK). It covers:
+This works with Codex, Claude Code, Gemini CLI, GitHub Copilot, OpenCode, and other repository-capable Agents. If direct access is unavailable, let the Agent clone the repository into its workspace.
 
-- creating a new governed project and stopping at draft-requirement confirmation;
-- inspecting an existing repository with read-only adoption checks before any writes;
-- resuming an already governed project without repeated initialization or duplicate records;
-- explicit trigger scenarios, inputs, workflow, outputs, acceptance criteria, and authorization gates.
+### Optional local installation
 
-Files:
+Install a Skill only when an Agent runtime requires it for automatic discovery or offline use. Follow that runtime's documentation and copy the complete Skill directory to its supported location, such as `~/.agents/skills/` or `~/.codex/skills/`.
 
-- [English entrypoint](skills/project-governance-kit/SKILL.md)
-- [中文完整版](skills/project-governance-kit/SKILL.zh-CN.md)
-- [Codex UI metadata](skills/project-governance-kit/agents/openai.yaml)
+## Available Skills
 
-## Repository Layout
+| Skill | Use | Files |
+| --- | --- | --- |
+| `submitting-pull-requests` | Contribute to GitHub repositories through forks and pull requests, including validation, synchronization, CI, and review. | [English](skills/submitting-pull-requests/SKILL.md) · [中文](skills/submitting-pull-requests/SKILL.zh-CN.md) |
+| `project-governance-kit` | Use Project Governance Kit through conversation to create, adopt, or resume governed projects. | [English](skills/project-governance-kit/SKILL.md) · [中文](skills/project-governance-kit/SKILL.zh-CN.md) · [Optional UI metadata](skills/project-governance-kit/agents/openai.yaml) |
+
+## Repository Structure
 
 ```text
 skills/
   <skill-name>/
-    SKILL.md              # Canonical entrypoint (English by default)
-    SKILL.<locale>.md     # Optional full localization
-    agents/               # Optional UI metadata and invocation policy
-    references/           # Optional on-demand documentation
-    scripts/              # Optional executable helpers
-    assets/               # Optional generated-output assets
+    SKILL.md              # Canonical entrypoint
+    SKILL.<locale>.md     # Optional localization
+    agents/               # Optional UI metadata
+    references/           # Optional documentation
+    scripts/              # Optional helpers
+    assets/               # Optional assets
 ```
 
-Keep each skill self-contained. Before publishing, validate the YAML frontmatter, trigger conditions, workflow completeness, and any supporting resources.
+`SKILL.md` is canonical. An Agent may use a localized copy when available, but should report any conflict with the canonical entrypoint.
 
-## Languages
+## Contributing
 
-`SKILL.md` is the canonical file recognized by Agent Skills runtimes. This repository uses English for the canonical entrypoint and stores translated full copies as `SKILL.<locale>.md` so the runtime does not load both languages at once.
-
-To use a localized skill, copy the relevant directory to your local skills directory and make the localization file the entrypoint. For example, in PowerShell:
-
-```powershell
-Copy-Item -Recurse .\skills\submitting-pull-requests $env:USERPROFILE\.codex\skills\submitting-pull-requests
-Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.en.md
-Move-Item $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.zh-CN.md $env:USERPROFILE\.codex\skills\submitting-pull-requests\SKILL.md
-```
-
-On macOS or Linux, use the equivalent `cp` and `mv` commands. Do not keep two `SKILL.md` files in one directory.
-
-## Installation
-
-Copy the skill directory into a supported skills location:
-
-```text
-~/.codex/skills/<skill-name>/
-```
-
-Other Agent Skills-compatible runtimes may use:
-
-```text
-~/.agents/skills/<skill-name>/
-```
-
-## Contributing Skills
-
-When adding a skill, create a dedicated directory under `skills/`, include a valid `SKILL.md`, and update the included-skills list in both README files. Never publish credentials, private configuration, session transcripts, or machine-specific files.
+Add each Skill under `skills/<skill-name>/`, include a valid `SKILL.md`, and update both README files. Do not publish credentials, private configuration, session transcripts, or machine-specific files.
 
 ## License
 
