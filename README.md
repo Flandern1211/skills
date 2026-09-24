@@ -37,6 +37,7 @@ Install a Skill only when an Agent runtime requires it for automatic discovery o
 | --- | --- | --- |
 | `submitting-pull-requests` | Contribute to GitHub repositories through forks and pull requests, including validation, synchronization, CI, and review. | [English](skills/submitting-pull-requests/SKILL.md) · [中文](skills/submitting-pull-requests/SKILL.zh-CN.md) |
 | `project-governance-kit` | Use Project Governance Kit through conversation to create, adopt, or resume governed projects. | [English](skills/project-governance-kit/SKILL.md) · [中文](skills/project-governance-kit/SKILL.zh-CN.md) · [Optional UI metadata](skills/project-governance-kit/agents/openai.yaml) |
+| `synthetic-data-review` | Audit model-training synthetic data for grounding, duplicates, privacy, and format with traceable decisions. | [Skill](skills/synthetic-data-review/SKILL.md) · [Source](skills/synthetic-data-review/references/source.md) |
 
 ## Repository Structure
 

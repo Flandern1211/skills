@@ -36,6 +36,7 @@ Skill 及其引用资源，然后按照说明完成任务：<描述任务>
 | --- | --- | --- |
 | `submitting-pull-requests` | 通过 Fork 和 Pull Request 向 GitHub 仓库贡献，覆盖验证、同步、CI 和审查。 | [英文](skills/submitting-pull-requests/SKILL.md) · [中文](skills/submitting-pull-requests/SKILL.zh-CN.md) |
 | `project-governance-kit` | 通过对话使用 Project Governance Kit 创建、接入或恢复治理项目。 | [英文](skills/project-governance-kit/SKILL.md) · [中文](skills/project-governance-kit/SKILL.zh-CN.md) · [可选 UI 元数据](skills/project-governance-kit/agents/openai.yaml) |
+| `synthetic-data-review` | 审查模型合成训练数据的依据、重复、隐私和格式，输出可追溯的裁决。 | [Skill](skills/synthetic-data-review/SKILL.md) · [来源](skills/synthetic-data-review/references/source.md) |
 
 ## 仓库结构
 
